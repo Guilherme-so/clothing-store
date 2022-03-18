@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import {
   EntrarWithGooglePopup,
-  createUserDocumentFromAuth,
   entrarAuthUserWithEmailAndPassword,
 } from '../../Utilities/Firebase/firebase'
 
@@ -19,17 +18,13 @@ const Entrar = () => {
   const { email, senha } = formFields
 
   const EntrarComGoogle = async () => {
-    const response = await EntrarWithGooglePopup()
-    const userDocRef = await createUserDocumentFromAuth(response.user)
-    console.log(userDocRef)
+    await EntrarWithGooglePopup()
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-
     try {
-      const response = await entrarAuthUserWithEmailAndPassword(email, senha)
-      console.log(response)
+      const { user } = await entrarAuthUserWithEmailAndPassword(email, senha)
       setFormFields(defaultFormFields)
     } catch (error) {
       switch (error.code) {

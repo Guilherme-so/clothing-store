@@ -6,6 +6,8 @@ import {
   signInWithRedirect,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
 } from 'firebase/auth'
 
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
@@ -40,25 +42,28 @@ export const EntrarWithGooglePopup = () => signInWithPopup(auth, googleProvider)
 export const EntrarWithGoogleRedirect = () =>
   signInWithRedirect(auth, googleProvider)
 
+//firestore database
 export const db = getFirestore()
 
+//criar usuario com conta ja auth do google
 export const createUserDocumentFromAuth = async (
   userAuth,
   adtionalInfo = {}
 ) => {
   if (!userAuth) return
+
   const userDocRef = doc(db, 'users', userAuth.uid)
 
   const userSnapshot = await getDoc(userDocRef)
 
-  //se usuario não existe
+  //se usuario não existe, cria um usuario
   if (!userSnapshot.exists()) {
-    const { nome, email } = userAuth
+    const { displayName, email } = userAuth
     const createdAt = new Date()
 
     try {
       await setDoc(userDocRef, {
-        nome,
+        displayName,
         email,
         createdAt,
         ...adtionalInfo,
@@ -68,7 +73,7 @@ export const createUserDocumentFromAuth = async (
     }
   }
 
-  //se usuario existe
+  //se usuario existe, retorna o usuario
   return userDocRef
 }
 
@@ -77,8 +82,13 @@ export const createAuthUserWithEmailAndPassword = async (email, senha) => {
   return await createUserWithEmailAndPassword(auth, email, senha)
 }
 
-
 export const entrarAuthUserWithEmailAndPassword = async (email, senha) => {
   if (!senha || !email) return
   return await signInWithEmailAndPassword(auth, email, senha)
 }
+
+export const sair = async () => await signOut(auth)
+
+//auto ver se usuario entrou ou saiu
+export const onAuthStateChangedListener = (callback) =>
+  onAuthStateChanged(auth, callback)

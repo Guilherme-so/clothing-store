@@ -3,12 +3,13 @@ import {
   createAuthUserWithEmailAndPassword,
   createUserDocumentFromAuth,
 } from '../../Utilities/Firebase/firebase'
+
 import FormInput from '../Form/Form'
 import Button from '../Button/Button'
 import './cadastrar.styles.scss'
 
 const cadastroForm = {
-  nome: '',
+  displayName: '',
   email: '',
   senha: '',
   comfirmeSenha: '',
@@ -16,7 +17,7 @@ const cadastroForm = {
 
 const Cadastrar = () => {
   const [form, setForm] = useState(cadastroForm)
-  const { nome, email, senha, comfirmeSenha } = form
+  const { displayName, email, senha, comfirmeSenha } = form
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -28,13 +29,13 @@ const Cadastrar = () => {
 
     try {
       const { user } = await createAuthUserWithEmailAndPassword(email, senha)
-      await createUserDocumentFromAuth(user, { nome })
+      await createUserDocumentFromAuth(user, { displayName })
       setForm(cadastroForm)
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
-        alert('Email ja ja em uso')
+        alert('Email ja em uso')
       } else {
-        console.log('Ouve um erro na criação de usuaria', error)
+        console.log('Ouve um erro na criação de usuario', error)
       }
     }
   }
@@ -52,8 +53,8 @@ const Cadastrar = () => {
         <FormInput
           label='Nome'
           type='text'
-          name='nome'
-          value={nome}
+          name='displayName'
+          value={displayName}
           onChange={handleChange}
           required
         />
