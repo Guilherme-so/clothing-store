@@ -1,5 +1,5 @@
 import React from 'react'
-import CategoryItem from '../../components/category-item/category-item.component'
+import CategoryItem from '../../components/category/category-item.component'
 import CategoriesData from '../../components/category-data/category-data'
 
 import './home.styles.scss'

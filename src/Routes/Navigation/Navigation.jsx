@@ -3,11 +3,14 @@ import { Outlet, Link } from 'react-router-dom'
 import Logo from '../../assets/crown.svg?component'
 import { UserContext } from '../../Context/UserContext'
 import { sair } from '../../Utilities/Firebase/firebase'
+import CartIcon from '../../components/Cart-icon/CartIcon'
+import CartDropdown from '../../components/Cart-dropdown/CartDropdown'
+import { CartContext } from '../../Context/CartContext'
 import './navigation.styles.scss'
 
 const Navigation = () => {
   const { currentUser } = useContext(UserContext)
-  console.log(currentUser)
+  const { isModalOpen } = useContext(CartContext)
 
   return (
     <>
@@ -29,7 +32,9 @@ const Navigation = () => {
               ENTRAR
             </Link>
           )}
+          <CartIcon />
         </div>
+        {isModalOpen && <CartDropdown />}
       </div>
       <Outlet />
     </>
