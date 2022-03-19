@@ -4,7 +4,7 @@ import { CartContext } from '../../Context/CartContext'
 import './cartIcon.scss'
 
 const CartIcon = () => {
-  const { isModalOpen, setIsModalOpen } = useContext(CartContext)
+  const { isModalOpen, setIsModalOpen,cartCount } = useContext(CartContext)
 
   const handleToogle = () => {
     setIsModalOpen(!isModalOpen)
@@ -13,7 +13,7 @@ const CartIcon = () => {
   return (
     <div className='cart-icon-container' onClick={handleToogle}>
       <Bag className='shopping-icon' />
-      <span className='item-count'>0</span>
+      <span className='item-count'>{cartCount}</span>
     </div>
   )
 }
