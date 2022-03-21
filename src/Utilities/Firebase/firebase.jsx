@@ -1,3 +1,4 @@
+import { async } from '@firebase/util'
 import { initializeApp } from 'firebase/app'
 import {
   GoogleAuthProvider,
@@ -10,7 +11,16 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth'
 
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+  query,
+  getDocs,
+} from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyC-YicIyQl5VSTlzcH5t0qtJnxp_D8oPMs',
@@ -44,6 +54,36 @@ export const EntrarWithGoogleRedirect = () =>
 
 //firestore database
 export const db = getFirestore()
+
+//adicionar categoria e os dados no firestore db
+export const addCollectionAndDocuments = async (collectionKey, objectToAdd) => {
+  const collectionRef = collection(db, collectionKey)
+  const batch = writeBatch(db)
+
+  objectToAdd.forEach((object) => {
+    const docRef = doc(collectionRef, object.title.toLowerCase())
+    batch.set(docRef, object)
+  })
+
+  await batch.commit()
+  console.log('done')
+}
+
+//pega as categorias e produtos do firebase banco de dados
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, 'categories')
+  const q = query(collectionRef)
+
+  const querySnapshot = await getDocs(q)
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const { title, items } = docSnapshot.data()
+    acc[title.toLowerCase()] = items
+
+    return acc
+  }, {})
+
+  return categoryMap
+}
 
 //criar usuario com conta ja auth do google
 export const createUserDocumentFromAuth = async (
