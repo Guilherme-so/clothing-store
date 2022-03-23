@@ -1,20 +1,19 @@
 import { useContext } from 'react'
-import Bag from '../../assets/shopping-bag.svg?component'
 import { CartContext } from '../../Context/CartContext'
-import './cartIcon.scss'
+import { CartIconContainer, ShoppingSvg, CountItem } from './cartIcon.styles'
 
 const CartIcon = () => {
-  const { isModalOpen, setIsModalOpen,cartCount } = useContext(CartContext)
+  const { isModalOpen, setIsModalOpen, cartCount } = useContext(CartContext)
 
   const handleToogle = () => {
     setIsModalOpen(!isModalOpen)
   }
 
   return (
-    <div className='cart-icon-container' onClick={handleToogle}>
-      <Bag className='shopping-icon' />
-      <span className='item-count'>{cartCount}</span>
-    </div>
+    <CartIconContainer onClick={handleToogle}>
+      <ShoppingSvg />
+      <CountItem>{cartCount}</CountItem>
+    </CartIconContainer>
   )
 }
 

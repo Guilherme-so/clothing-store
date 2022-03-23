@@ -5,7 +5,7 @@ import {
 } from '../../Utilities/Firebase/firebase'
 
 import FormInput from '../../components/Form/Form'
-import Button from '../Button/Button'
+import Button,{BUTTON_TYPE_CLASSES} from '../Button/Button'
 import './entrar.styles.scss'
 
 const defaultFormFields = {
@@ -68,7 +68,7 @@ const Entrar = () => {
         />
         <div className='buttons'>
           <Button type='submit'>Entrar</Button>
-          <Button type='button' buttonType='google' onClick={EntrarComGoogle}>
+          <Button type='button' buttonType={BUTTON_TYPE_CLASSES.google} onClick={EntrarComGoogle}>
             Entrar com Google
           </Button>
         </div>

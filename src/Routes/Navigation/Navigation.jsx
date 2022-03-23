@@ -6,7 +6,13 @@ import { sair } from '../../Utilities/Firebase/firebase'
 import CartIcon from '../../components/Cart-icon/CartIcon'
 import CartDropdown from '../../components/Cart-dropdown/CartDropdown'
 import { CartContext } from '../../Context/CartContext'
-import './navigation.styles.scss'
+
+import {
+  NavigationContainer,
+  LogoContainer,
+  NavLinks,
+  NavLink,
+} from './navigation.styles'
 
 const Navigation = () => {
   const { currentUser } = useContext(UserContext)
@@ -14,28 +20,25 @@ const Navigation = () => {
 
   return (
     <>
-      <div className='navigation'>
-        <Link className='logo-container' to='/'>
+      <NavigationContainer>
+        <LogoContainer to='/'>
           <Logo className='logo' />
-        </Link>
-        <div className='links-container'>
-          <Link className='link' to='shop'>
-            SHOP
-          </Link>
+        </LogoContainer>
+
+        <NavLinks>
+          <NavLink to='shop'>SHOP</NavLink>
 
           {currentUser ? (
-            <span className='link' onClick={sair}>
+            <NavLink as='span' onClick={sair}>
               SAIR
-            </span>
+            </NavLink>
           ) : (
-            <Link className='link' to='auth'>
-              ENTRAR
-            </Link>
+            <NavLink to='auth'>ENTRAR</NavLink>
           )}
           <CartIcon />
-        </div>
+        </NavLinks>
         {isModalOpen && <CartDropdown />}
-      </div>
+      </NavigationContainer>
       <Outlet />
     </>
   )
