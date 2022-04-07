@@ -1,4 +1,3 @@
-import { async } from '@firebase/util'
 import { initializeApp } from 'firebase/app'
 import {
   GoogleAuthProvider,
@@ -47,7 +46,7 @@ googleProvider.getCustomParameters({
 export const auth = getAuth()
 
 //entrar com Popup que pega a autenticaçao do google e a conta selecionada
-export const EntrarWithGooglePopup = () => signInWithPopup(auth, googleProvider)
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider)
 //entrar com google redirect
 export const EntrarWithGoogleRedirect = () =>
   signInWithRedirect(auth, googleProvider)
@@ -75,14 +74,7 @@ export const getCategoriesAndDocuments = async () => {
   const q = query(collectionRef)
 
   const querySnapshot = await getDocs(q)
-  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
-    const { title, items } = docSnapshot.data()
-    acc[title.toLowerCase()] = items
-
-    return acc
-  }, {})
-
-  return categoryMap
+  return querySnapshot.docs.map((docSnapshot) => docSnapshot.data())
 }
 
 //criar usuario com conta ja auth do google
@@ -114,7 +106,7 @@ export const createUserDocumentFromAuth = async (
   }
 
   //se usuario existe, retorna o usuario
-  return userDocRef
+  return userSnapshot
 }
 
 export const createAuthUserWithEmailAndPassword = async (email, senha) => {
@@ -122,13 +114,26 @@ export const createAuthUserWithEmailAndPassword = async (email, senha) => {
   return await createUserWithEmailAndPassword(auth, email, senha)
 }
 
-export const entrarAuthUserWithEmailAndPassword = async (email, senha) => {
+export const signInAuthUserWithEmailAndPassword = async (email, senha) => {
   if (!senha || !email) return
   return await signInWithEmailAndPassword(auth, email, senha)
 }
 
-export const sair = async () => await signOut(auth)
+export const signOutUser = async () => await signOut(auth)
 
 //auto ver se usuario entrou ou saiu
 export const onAuthStateChangedListener = (callback) =>
   onAuthStateChanged(auth, callback)
+
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (userAuth) => {
+        unsubscribe()
+        resolve(userAuth)
+      },
+      reject
+    )
+  })
+}

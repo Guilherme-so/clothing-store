@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
-import {
-  EntrarWithGooglePopup,
-  entrarAuthUserWithEmailAndPassword,
-} from '../../Utilities/Firebase/firebase'
+import { useDispatch } from 'react-redux'
 
 import FormInput from '../../components/Form/Form'
-import Button,{BUTTON_TYPE_CLASSES} from '../Button/Button'
+import Button, { BUTTON_TYPE_CLASSES } from '../Button/Button'
+
 import './entrar.styles.scss'
+import {
+  googleSignInStart,
+  emailSignInStart,
+} from '../../store/user/user.action'
 
 const defaultFormFields = {
   email: '',
@@ -17,14 +19,16 @@ const Entrar = () => {
   const [formFields, setFormFields] = useState(defaultFormFields)
   const { email, senha } = formFields
 
+  const dispatch = useDispatch()
+
   const EntrarComGoogle = async () => {
-    await EntrarWithGooglePopup()
+    dispatch(googleSignInStart())
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     try {
-      const { user } = await entrarAuthUserWithEmailAndPassword(email, senha)
+      dispatch(emailSignInStart(email, senha))
       setFormFields(defaultFormFields)
     } catch (error) {
       switch (error.code) {
@@ -68,7 +72,11 @@ const Entrar = () => {
         />
         <div className='buttons'>
           <Button type='submit'>Entrar</Button>
-          <Button type='button' buttonType={BUTTON_TYPE_CLASSES.google} onClick={EntrarComGoogle}>
+          <Button
+            type='button'
+            buttonType={BUTTON_TYPE_CLASSES.google}
+            onClick={EntrarComGoogle}
+          >
             Entrar com Google
           </Button>
         </div>

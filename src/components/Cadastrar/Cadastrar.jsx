@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+
 import {
   createAuthUserWithEmailAndPassword,
   createUserDocumentFromAuth,
@@ -7,6 +9,7 @@ import {
 import FormInput from '../Form/Form'
 import Button from '../Button/Button'
 import './cadastrar.styles.scss'
+import { signUpStart } from '../../store/user/user.action'
 
 const cadastroForm = {
   displayName: '',
@@ -18,6 +21,7 @@ const cadastroForm = {
 const Cadastrar = () => {
   const [form, setForm] = useState(cadastroForm)
   const { displayName, email, senha, comfirmeSenha } = form
+  const dispatch = useDispatch()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -28,8 +32,8 @@ const Cadastrar = () => {
     }
 
     try {
-      const { user } = await createAuthUserWithEmailAndPassword(email, senha)
-      await createUserDocumentFromAuth(user, { displayName })
+      dispatch(signUpStart(email, senha, displayName))
+
       setForm(cadastroForm)
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {

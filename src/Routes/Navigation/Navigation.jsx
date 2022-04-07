@@ -1,11 +1,15 @@
-import { useContext } from 'react'
-import { Outlet, Link } from 'react-router-dom'
-import Logo from '../../assets/crown.svg?component'
-import { UserContext } from '../../Context/UserContext'
-import { sair } from '../../Utilities/Firebase/firebase'
+import { Outlet } from 'react-router-dom'
+
+import { useSelector, useDispatch } from 'react-redux'
+
 import CartIcon from '../../components/Cart-icon/CartIcon'
 import CartDropdown from '../../components/Cart-dropdown/CartDropdown'
-import { CartContext } from '../../Context/CartContext'
+
+import { selectIsCartOpen } from '../../store/cart/cart.selector'
+import { selectCurrentUser } from '../../store/user/user.selector'
+import { signOutStart } from '../../store/user/user.action'
+
+import Logo from '../../assets/crown.svg?component'
 
 import {
   NavigationContainer,
@@ -15,8 +19,11 @@ import {
 } from './navigation.styles'
 
 const Navigation = () => {
-  const { currentUser } = useContext(UserContext)
-  const { isModalOpen } = useContext(CartContext)
+  const currentUser = useSelector(selectCurrentUser)
+  const isCartOpen = useSelector(selectIsCartOpen)
+  const dispatch = useDispatch()
+
+  const signOutUser = () => dispatch(signOutStart())
 
   return (
     <>
@@ -29,7 +36,7 @@ const Navigation = () => {
           <NavLink to='shop'>SHOP</NavLink>
 
           {currentUser ? (
-            <NavLink as='span' onClick={sair}>
+            <NavLink as='span' onClick={signOutUser}>
               SAIR
             </NavLink>
           ) : (
@@ -37,7 +44,7 @@ const Navigation = () => {
           )}
           <CartIcon />
         </NavLinks>
-        {isModalOpen && <CartDropdown />}
+        {isCartOpen && <CartDropdown />}
       </NavigationContainer>
       <Outlet />
     </>
